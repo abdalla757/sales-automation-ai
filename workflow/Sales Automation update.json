@@ -1,0 +1,715 @@
+{
+  "name": "Sales Automation update",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "13cmfy6AuVuPUdBFeor1N6bKrKp1PLDVb",
+          "mode": "list",
+          "cachedResultName": "Sales Automation",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/13cmfy6AuVuPUdBFeor1N6bKrKp1PLDVb"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1728,
+        672
+      ],
+      "id": "1fb8f602-41c9-493b-b5bb-17c5266757ee",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "gqU9IhCwlx3Ic4br",
+          "name": "Abdalla Tech Drive"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "17842863-3343-4db4-b9c1-8f9cb333102c",
+              "name": "file_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1504,
+        672
+      ],
+      "id": "190d33ae-e0d7-43c6-ae31-b4d1b87d972e",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.file_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1296,
+        672
+      ],
+      "id": "a9d55996-4f1a-4156-aebf-b2769702c83d",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "gqU9IhCwlx3Ic4br",
+          "name": "Abdalla Tech Drive"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -1088,
+        672
+      ],
+      "id": "889fbac0-03d5-4aee-84e7-f7c7094bd5ce",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "8024780e-e21f-47d0-af2a-8b30476ea95d",
+              "leftValue": "={{ $json.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "25cba1da-cfdc-4cd0-9e91-88c69634b707",
+              "leftValue": "={{ $json.companyDomain }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        -864,
+        672
+      ],
+      "id": "68ad4303-548e-4b55-9009-b529d7edb0b6",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -656,
+        672
+      ],
+      "id": "b02137fc-4630-4c39-8697-01232ff06dac",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "944ce671-4c05-418d-a5ea-38daaf00c05c",
+              "name": "name",
+              "value": "={{ $json.fullName }}",
+              "type": "string"
+            },
+            {
+              "id": "1cb25d1e-1353-4a07-a9fd-02839e402b89",
+              "name": "email",
+              "value": "={{ $json.email }}",
+              "type": "string"
+            },
+            {
+              "id": "cd0d3c8d-03e7-4f69-b978-52ebb659b125",
+              "name": "website",
+              "value": "={{ $json.companyDomain }}",
+              "type": "string"
+            },
+            {
+              "id": "bccad27c-4b2f-4e7a-9355-9018b6f2482c",
+              "name": "campanyName",
+              "value": "={{ $json.companyName }}",
+              "type": "string"
+            },
+            {
+              "id": "300e9eb8-2fb5-409a-9d6f-69b7f22725e8",
+              "name": "title",
+              "value": "={{ $json.companyDescription }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -416,
+        320
+      ],
+      "id": "60995884-a5c9-4407-9aa6-f1face254b9d",
+      "name": "data"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are a sales email writer.\n\nCompany:\n{{ $('data').item.json.campanyName }}\n\nResearch:\n{{ $json.output }}\n\nTASK\n\nWrite ONE personalized cold email opener using ONLY the \"Sales Insights\" section of the research.\n\nUse the fields in this exact order:\n\nPersonalization Hook → opening sentence\nBest Service → ONE service to mention\nWhy → evidence for relevance\nSales Angle → sales message\n\nSTRICT RULES\n\n- Ignore Executive Summary and general company descriptions when writing the sales angle.\n- Do not create or invent a new sales angle.\n- Do not use general facts about the company as a sales opportunity.\n- Do not mention company growth, manufacturing, expansion, technology, or digital transformation unless the Sales Insights explicitly connects them to the selected service.\n- Do not speculate about needs, challenges, priorities, or future plans.\n- Do not say the company needs or requires our service.\n- Do not mention any service other than the \"Best Service\".\n- If Best Service is \"No clear service opportunity found\", do NOT write an email. Instead return exactly this JSON: [{\"draft\": \"SKIP\", \"company_summary\": \"SKIP\"}]\n- Use only facts explicitly stated in Personalization Hook and Sales Insights.\n- Never mention research, web search, sources, or URLs.\n- Company-centric only.\n- Professional, friendly, and natural.\n- No generic compliments.\n- No invented facts or assumptions.\n- End with a brief 10-15 minute meeting request.\n- 2 short paragraphs, 4-6 sentences total.\n- Plain text only.\n- Do not restate the same fact or observation twice in different wording within the email — each sentence must add new information.\n\nOUTPUT\n\nReturn ONLY:\n\n[\n  {\n    \"draft\": \"Paragraph one.\\n\\nParagraph two.\",\n    \"company_summary\": \"One short factual sentence about the company.\"\n  }\n]"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        352,
+        304
+      ],
+      "id": "836050ec-7477-4db7-9823-67ddfd17c091",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "openai/o4-mini",
+          "mode": "list"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        352,
+        480
+      ],
+      "id": "f0703f12-a7f1-4cdc-857e-1f262fc75a63",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "WGGm5sgIpnrxw9CH",
+          "name": "Abdalla tech (sales)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1MEfN9N-hfxTSSzEs6RZAhcGTDiI3A89pGKd-TXwQO0s",
+          "mode": "list",
+          "cachedResultName": "dataset_lead(rusalt)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MEfN9N-hfxTSSzEs6RZAhcGTDiI3A89pGKd-TXwQO0s/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "الورقة1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MEfN9N-hfxTSSzEs6RZAhcGTDiI3A89pGKd-TXwQO0s/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('data').item.json.name }}",
+            "Email": "={{ $('data').item.json.email }}",
+            "Website": "={{ $('data').item.json.website }}",
+            "company": "={{ $('data').item.json.campanyName }}",
+            "title": "={{ $('data').item.json.title }}",
+            "draft": "={{ $json.icebreaker }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Website",
+              "displayName": "Website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "draft",
+              "displayName": "draft",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1200,
+        448
+      ],
+      "id": "9bd33c18-69fa-4c0e-a29a-ec59802908a2",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "UwyTiiEY8SRxCwRC",
+          "name": "Abdalla Tech"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=lead website: {{ $json.website }}\nlead company Name:{{ $json.campanyName }}",
+        "options": {
+          "systemMessage": "=You are a Sales Research Agent.\n\nYour goal is to research a lead/company online and identify ONE genuine, evidence-based opportunity to sell one of these services:\n\n* Motion Graphics\n* Branding\n* Content Generation\n\nAlways use web search to find promising URLs, then use fetch_page to read the full content of the most relevant official pages (Services, News, About) before concluding — do not rely on search snippets alone.\n\nRESEARCH\n\n1. Identify the official company website.\n2. Review relevant pages when available:\n   - Products / Services\n   - News / Blog\n   - Case Studies / Projects\n   - Media / Videos\n   - About / Brand\n3. Search reputable external sources for recent signals:\n   - Product launches or showcases\n   - Events, exhibitions, or campaigns\n   - Marketing or promotional activity\n   - Rebranding or brand identity changes\n   - Content publishing or thought leadership\n   - New products, services, or initiatives being actively promoted\n\nSERVICE MATCHING\n\nMotion Graphics:\nDirect evidence of video, animation, product visualization, visual demonstrations, or motion-based communication.\n\nBranding:\nDirect evidence of rebranding, new brand identity, brand positioning, visual identity changes, or a new product/brand launch requiring brand communication.\n\nContent Generation:\nDirect evidence of active content publishing, articles, blogs, thought leadership, reports, newsletters, social media, or content marketing.\n\nRULES\n\n* Choose ONE Best Service only when strong, direct evidence supports it.\n* Do not confuse potential fit with evidence of opportunity.\n* Complex products, technology, manufacturing, digital transformation, growth, expansion, or automation alone do NOT justify a service recommendation.\n* Do not assume, guess, or speculate about a company’s needs.\n* Never claim a company needs or requires our services unless the source explicitly confirms it.\n* Prioritize the most recent relevant signals and use exact dates when timing matters.\n* Prefer official and primary sources, followed by reputable news or industry sources.\n* Avoid Wikipedia, generic directories, and low-quality sources when better sources exist.\n* Do not repeat the same event or fact.\n* Every Related Information item must directly support the selected service or Sales Angle.\n* The Sales Angle must be directly based on the strongest Sales Signal.\n* The Personalization Hook must be a factual observation only, with no sales pitch or assumptions.\n* Do not treat technical topics such as AI, 3D modeling, virtual simulations, or digital engineering as Motion Graphics evidence unless video, animation, or visual media is explicitly mentioned.\n* Do not infer that event participation means the company used specific marketing formats unless the source confirms it.\n* If no strong direct evidence exists, use \"No clear service opportunity found.\"\n* Keep the output concise.\n\nOUTPUT\n\nExecutive Summary:\n[1 short factual sentence]\n\nRelated Information:\n* [0–3 strongest relevant findings] — [Source URL]\n\nSales Insights:\n* Best Service: [Motion Graphics / Branding / Content Generation / No clear service opportunity found]\n* Why: [1 short evidence-based sentence]\n* Sales Angle: [1 short sentence directly connected to the strongest Sales Signal]\n* Personalization Hook: [1 short factual observation supported by the source]"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -176,
+        320
+      ],
+      "id": "08bd3a09-cf68-4702-b12c-4ac510002598",
+      "name": "AI Agent",
+      "retryOnFail": true,
+      "maxTries": 2,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "openai/gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "openai/gpt-4.1"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -176,
+        544
+      ],
+      "id": "9971847f-e18e-47e1-a413-aaef976348ff",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "WGGm5sgIpnrxw9CH",
+          "name": "Abdalla tech (sales)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://google.serper.dev/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-KEY",
+              "value": "72ffed4a817d810639810fdd34bc5947b3c1c5b1"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{$fromAI(\"query\")}}"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        -48,
+        560
+      ],
+      "id": "361649ae-f8b4-48c0-9d9c-af96314af657",
+      "name": "web_search"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json.text;\n\nconst parsed = JSON.parse(raw);\n\nreturn parsed.map(item => ({\n  json: item\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        704,
+        304
+      ],
+      "id": "e5dfbe7e-40f8-40e8-bfae-f440436b0ff0",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "url": "=https://r.jina.ai/{{ $fromAI(\"url\") }}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          },
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        96,
+        656
+      ],
+      "id": "56f9388e-df5a-4e30-828e-b7d323325ac5",
+      "name": "fetch_page"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e",
+              "leftValue": "={{ $json.draft }}",
+              "rightValue": "SKIP",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        896,
+        304
+      ],
+      "id": "348a81ea-f583-429d-93d0-1265f2612f7a",
+      "name": "Filter Skip"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "data": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "web_search": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "fetch_page": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Filter Skip",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Skip": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "aaf54da1-f3dc-43ca-9d63-213c3aa4de3d",
+  "meta": {
+    "instanceId": "b5eb0edceb79d0b8759ae94c18f02cdc58864ff8492a77d354b1ef926d728fdf"
+  },
+  "nodeGroups": [],
+  "id": "wqn9ovQ95yUS6jCG",
+  "tags": []
+}

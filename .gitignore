@@ -1,0 +1,16 @@
+# Environment variables
+.env
+.env.*
+
+# Node modules
+node_modules/
+
+# Log files
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
+
+# n8n local data (if you ever store it in the project)
+.n8n/
